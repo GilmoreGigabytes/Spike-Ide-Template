@@ -1,9 +1,8 @@
 from spike import PrimeHub, LightMatrix, Button, StatusLight, ForceSensor, MotionSensor, Speaker, ColorSensor, App, DistanceSensor, Motor, MotorPair
 from spike.control import wait_for_seconds
 from spike.control import Timer
-from sys import platform
 from math import *
-import os
+
 
 hub = PrimeHub()
 timer = Timer()
@@ -321,7 +320,7 @@ def missionSelector():
                 raise SystemExit(clear())
             else:
                 executeMission(missionId)
-        wait_for_seconds(.010)        
+        wait_for_seconds(.0001)        
 
 # Begin mission execution.
 missionSelector()
