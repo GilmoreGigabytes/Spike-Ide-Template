@@ -3,7 +3,6 @@ from spike.control import wait_for_seconds
 from spike.control import Timer
 from math import *
 
-
 hub = PrimeHub()
 timer = Timer()
 
@@ -27,30 +26,53 @@ class error:
 
 
     def throw(value, text : str):
-        raise ValueError("Error: " + {value} + "is invalid missionId \n" + {text})
+        raise ValueError(str(value) + " is invalid \n" + text)
 
 
-    def template(value, type : str):
-        if type == "sensor":
+    def template(value, typeVar : str):
+        if str(typeVar) == "sensor":
             if value != "left" and value != "right":
                 error.throw(value, "Sensor must be a string with the value of 'left' or 'right'")
             return
-        if type == "speed":
-            if error.typeCheck(value, int) == False or value <= 0:
+        if str(typeVar) == "speed":
+            if error.typeCheck(value, int and float) == False or value <= 0:
                 error.throw(value, "Speed must be an integer greater than 0")
             return
-        if type == "direction":
-            if value <= "left" and value != "right":
+        if str(typeVar) == "direction":
+            if value != "left" and value != "right":
                 error.throw(value, "Direction must be a string with the value of 'left' or 'right'")
             return
-        if type == "distance":
-            if error.typeCheck(value, int) == False or value <= 0:
+        if str(typeVar) == "moveDirection":
+            if value != "forward" and value != "backward":
+                error.throw(value, "Direction must be a string with the value of 'forward' or 'backward'")
+            return
+        if str(typeVar) == "armDirection":
+            if error.typeCheck(value, str) or value != "up" and value != "down":
+                error.throw(value, "Direction must be a string with the value of 'up' or 'down'")
+        if str(typeVar) == "distance":
+            if error.typeCheck(value, float) == False and error.typeCheck(value, int) == False or value <= 0:
                 error.throw(value, "Distance must an integer greater than 0")
             return
-        if type == "cm":
-            if error.typeCheck(value, int) == False or value <= 0:
-                error.throw(value, "Cm must be an int greater than 0")
+        if str(typeVar) == "armDistance":
+            if error.typeCheck(value, int) == False and error.typeCheck(value, float) == False:
+                error.throw(value, "Distance must an integer or float")
+            return
+        if str(typeVar) == "cm":
+            if error.typeCheck(value, int and float) == False or value <= 0:
+                error.throw(value, "Cm must be an integer greater than 0")
+                return
 
+def waitLight(time : int, i : int, step : int, on : bool):
+    timer.reset()
+    
+    if on == False:
+        while timer.now() < time:
+            hub.light_matrix.show_image("SQUARE_SMALL", brightness = i)
+            i -= step
+    if on == True:
+        while timer.now() < time:
+            hub.light_matrix.show_image("SQUARE_SMALL", brightness = i)
+            i += step
 
 def resetYawAngle():
     hub.motion_sensor.reset_yaw_angle()
@@ -72,7 +94,7 @@ def count(time : int):
     timer.reset()
 
     while timer.now() < time:
-        print("Left Motor: " + leftMotor.get_degrees_counted() + " | Right Motor: " + rightMotor.get_degrees_counted()  + "| Arm: " + arm.get_degrees_counted() + "| Left Colour Sensor: " + colourL.get_color() + "| Right Colour Sensor: " + colourR.get_color())
+        print("Left Motor: " + leftMotor.get_degrees_counted() + " | Right Motor: " + rightMotor.get_degrees_counted()+ "| Arm: " + arm.get_degrees_counted() + "| Left Colour Sensor: " + colourL.get_color() + "| Right Colour Sensor: " + colourR.get_color())
     clear()
 
 
@@ -86,7 +108,7 @@ def motion():
 
 def move(distance : int, direction : str, speed : int = defaultSpeed):
     error.template(distance, "distance")
-    error.template(direction, "direction")
+    error.template(direction, "moveDirection")
     error.template(speed, "speed")
 
     resetMotors()
@@ -118,6 +140,8 @@ def turn(deg : int, direction : str, aggressive : bool = False):
     error.template(deg, "deg")
     error.template(direction, "direction")
 
+    remainder = None
+
     if type(aggressive) != bool:
         error.throw(aggressive, "Aggressive mode must be a boolien")
 
@@ -127,7 +151,7 @@ def turn(deg : int, direction : str, aggressive : bool = False):
     if aggressive == True:
         turnSpeed = 100
     else:
-        turnSpeed = 20
+        turnSpeed = 45
 
     times = 1
     i = 0
@@ -152,7 +176,7 @@ def turn(deg : int, direction : str, aggressive : bool = False):
         times = 0
         remainder = deg - 45
 
-    var = 44# Adjusts for give in the wheels
+    var = 45 
 
     if direction == "left":
         while i < times:
@@ -189,13 +213,14 @@ def followLine(sensor : str, cm : int or float):
     resetMotors()
 
     deg = cm / 0.077
-    kp = 0.2# Value used for the calculation of the rate of change
+    kp = 0.2
     ki = 0
     kd = 0.22
     integral = 0
     lastError = 0
     error = 0
     speed = 30
+
     if sensor == "left":
         while abs(leftMotor.get_degrees_counted()) < deg or abs(rightMotor.get_degrees_counted()) < deg:
             light = ((colourL.get_reflected_light() - 20) / (87 - 10)) * 100
@@ -221,9 +246,9 @@ def followLine(sensor : str, cm : int or float):
 
 
 def moveArm(direction : str, speed : int, distance : int or float):
-    error.template(direction, "direction")
+    error.template(direction, "armDirection")
+    error.template(distance, "armDistance")
     error.template(speed, "speed")
-    error.template(distance, "distance")
 
     resetMotors()
 
@@ -279,21 +304,39 @@ def start(direction : str):
 
 
 def executeMission(missionId : int):
+    waitLight(1, 100, 3, False)
+    waitLight(2, 0, 3, True)
+
+    hub.status_light.on("green")
+    hub.light_matrix.show_image("SQUARE_SMALL", brightness = 100)
+
     if missionId == 0:
         print(0)
+        move(30, "forward", 255)
+        move(30, "backward", 255)
     elif missionId == 1:
         print(1)
+        turn(90, "left", False)
+        turn(90, "right", False)
+        turn(90, "left", True)
+        turn(90, "right", True)
     elif missionId == 2:
-        print(2)
+        turn(180, "right", False)
+        turn(180, "left", False)
     elif missionId == 3:
-        print(3)
+        moveArm("up", 255, 1/4)
+        moveArm("down", 255, 1/4)
+
+    resetMotors()
+    
+    waitLight(1.5, 100, 4, False)
 
 
 def missionSelector():
     missionId = 0
     maxMissions = 3
-    turn = 15
-    hub.status_light.on("blue")
+    turn = 10
+
     hub.light_matrix.show_image("GIRAFFE", brightness = 100)
 
     exit = False
@@ -301,26 +344,29 @@ def missionSelector():
     while True:
         resetMotors()
         if hub.right_button.was_pressed():
-            if missionId == maxMissions:
+            if missionId >= maxMissions:
+                if missionId == maxMissions + 1:
+                    pass
+                else:
+                    missionId += 1
                 exit = True
-                hub.light_matrix.show_image("SQUARE_SMALL", brightness = 100)
             else:
                 exit = False
                 missionId += 1
-                hub.light_matrix.write(str(missionId))
         elif hub.left_button.was_pressed():
-            if missionId == 0:
-                exit = False
-            else:
-                exit = True
+            if missionId != 0:
                 missionId -= 1
-                hub.light_matrix.write(str(missionId))
+                exit = False
         elif abs(leftMotor.get_degrees_counted()) >= turn or abs(rightMotor.get_degrees_counted()) >= turn:
-            if exit == True and missionId == maxMissions:
-                raise SystemExit(clear())
+            if exit == True and missionId >= maxMissions:
+                raise SystemExit("Exiting...")
             else:
                 executeMission(missionId)
-        wait_for_seconds(.0001)        
+        if exit == True:
+            hub.light_matrix.show_image("SQUARE_SMALL", brightness = 100)
+        else:
+            hub.light_matrix.write(str(missionId))
+        hub.status_light.on("blue")
 
 # Begin mission execution.
 missionSelector()
