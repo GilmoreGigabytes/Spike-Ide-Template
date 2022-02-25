@@ -321,23 +321,18 @@ def executeMission(missionId : int):
         turn(90, "left", True)
         turn(90, "right", True)
     elif missionId == 2:
-        turn(180, "right", False)
-        turn(180, "left", False)
+        moveWithCorrection(1000)
     elif missionId == 3:
         moveArm("up", 255, 1/4)
         moveArm("down", 255, 1/4)
-
     resetMotors()
-    
-    waitLight(1.5, 100, 4, False)
+    waitLight(1, 100, 4, False)
 
 
 def missionSelector():
     missionId = 0
     maxMissions = 3
     turn = 10
-
-    hub.light_matrix.show_image("GIRAFFE", brightness = 100)
 
     exit = False
 
@@ -359,6 +354,7 @@ def missionSelector():
                 exit = False
         elif abs(leftMotor.get_degrees_counted()) >= turn or abs(rightMotor.get_degrees_counted()) >= turn:
             if exit == True and missionId >= maxMissions:
+                waitLight(1.5, 1, 100, False)
                 raise SystemExit("Exiting...")
             else:
                 executeMission(missionId)
@@ -367,6 +363,7 @@ def missionSelector():
         else:
             hub.light_matrix.write(str(missionId))
         hub.status_light.on("blue")
+
 
 # Begin mission execution.
 missionSelector()
