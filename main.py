@@ -62,6 +62,32 @@ class error:
                 error.throw(value, "Cm must be an integer greater than 0")
                 return
 
+def loadingAnimation():
+    timer.reset()
+    row = 0
+    brightness = 0
+    time = 0.05
+    while timer.now() < 5:
+            if row == 4:
+                row = 0
+            row += 1
+            hub.light_matrix.set_pixel(2, row, 87)
+            wait_for_seconds(time)
+            hub.light_matrix.set_pixel(2, row, 77)
+            wait_for_seconds(time)
+            hub.light_matrix.set_pixel(2, row, 67)
+            wait_for_seconds(time)
+            hub.light_matrix.set_pixel(2, row, 57)
+            wait_for_seconds(time)
+            hub.light_matrix.set_pixel(2, row, 47)
+            wait_for_seconds(time)
+            hub.light_matrix.set_pixel(2, row, 37)
+            wait_for_seconds(time)
+            hub.light_matrix.set_pixel(2, row, 27)
+            wait_for_seconds(time)
+            hub.light_matrix.set_pixel(2, row, 17)
+            wait_for_seconds(time)
+
 
 def waitLight(time : int, i : int, step : int, on : bool):
     timer.reset()
@@ -305,6 +331,10 @@ def start(direction : str):
         pass
 
 
+def missionTester():
+    print("Test Stuff In Here")
+
+
 def executeMission(missionId : int):
     waitLight(1, 100, 3, False)
     waitLight(2, 0, 3, True)
@@ -313,28 +343,8 @@ def executeMission(missionId : int):
     hub.light_matrix.show_image("SQUARE_SMALL", brightness = 100)
 
     if missionId == 0:
-        print(0)
-        move(30, "forward", 255)
-        move(30, "backward", 255)
-    elif missionId == 1:
-        print(1)
-        turn(90, "left", False)
-        turn(90, "right", False)
-        turn(90, "left", True)
-        turn(90, "right", True)
-    elif missionId == 2:
-        moveWithCorrection(1000)
-    elif missionId == 3:
-        moveArm("up", 255, 1/4)
-        moveArm("down", 255, 1/4)
-    resetMotors()
-    waitLight(1, 100, 4, False)
-
-
-def missionTester():
-    print("Run The Mission You Want To Test In This Function Without The Mission Selector")
-
-
+        pass
+        
 def missionSelector():
     missionId = 0
     maxMissions = 3
@@ -373,4 +383,6 @@ def missionSelector():
 
 
 # Begin mission execution.
+loadingAnimation()
 missionSelector()
+# missionTester()
