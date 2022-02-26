@@ -62,6 +62,7 @@ class error:
                 error.throw(value, "Cm must be an integer greater than 0")
                 return
 
+
 def waitLight(time : int, i : int, step : int, on : bool):
     timer.reset()
     
@@ -73,6 +74,7 @@ def waitLight(time : int, i : int, step : int, on : bool):
         while timer.now() < time:
             hub.light_matrix.show_image("SQUARE_SMALL", brightness = i)
             i += step
+
 
 def resetYawAngle():
     hub.motion_sensor.reset_yaw_angle()
@@ -89,12 +91,12 @@ def clear():
         print("")
 
 
-def count(time : int):
+def count(time : int = 1):
     resetMotors()
     timer.reset()
 
     while timer.now() < time:
-        print("Left Motor: " + leftMotor.get_degrees_counted() + " | Right Motor: " + rightMotor.get_degrees_counted()+ "| Arm: " + arm.get_degrees_counted() + "| Left Colour Sensor: " + colourL.get_color() + "| Right Colour Sensor: " + colourR.get_color())
+        print("Left Motor: " + str(leftMotor.get_degrees_counted()) + " | Right Motor: " + str(rightMotor.get_degrees_counted()) + "| Arm: " + str(arm.get_degrees_counted()) + "| Left Colour Sensor: " + str(colourL.get_color()) + "| Right Colour Sensor: " + str(colourR.get_color()))
     clear()
 
 
@@ -299,7 +301,7 @@ def moveToLine(sensor : str, direction : str):
 
 
 def start(direction : str):
-    if direction == 0:
+    if direction == "example":
         pass
 
 
@@ -329,6 +331,10 @@ def executeMission(missionId : int):
     waitLight(1, 100, 4, False)
 
 
+def missionTester():
+    print("Run The Mission You Want To Test In This Function Without The Mission Selector")
+
+
 def missionSelector():
     missionId = 0
     maxMissions = 3
@@ -348,12 +354,13 @@ def missionSelector():
             else:
                 exit = False
                 missionId += 1
-        elif hub.left_button.was_pressed():
+        if hub.left_button.was_pressed():
             if missionId != 0:
                 missionId -= 1
                 exit = False
-        elif abs(leftMotor.get_degrees_counted()) >= turn or abs(rightMotor.get_degrees_counted()) >= turn:
+        if abs(rightMotor.get_degrees_counted()) >= turn:
             if exit == True and missionId >= maxMissions:
+                clear()
                 waitLight(1.5, 1, 100, False)
                 raise SystemExit("Exiting...")
             else:
@@ -361,7 +368,7 @@ def missionSelector():
         if exit == True:
             hub.light_matrix.show_image("SQUARE_SMALL", brightness = 100)
         else:
-            hub.light_matrix.write(str(missionId))
+            hub.light_matrix.write(str(missionId))    
         hub.status_light.on("blue")
 
 
