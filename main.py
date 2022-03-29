@@ -14,7 +14,7 @@ leftMotor = Motor("A")
 arm = Motor("C")
 
 colourL = ColorSensor("F")
-colourR = ColorSensor("E")
+colourR = ColorSensor("B")
 
 defaultSpeed = 60
 
@@ -62,36 +62,10 @@ class error:
                 error.throw(value, "Cm must be an integer greater than 0")
                 return
 
-def loadingAnimation():
-    timer.reset()
-    row = 0
-    brightness = 0
-    time = 0.05
-    while timer.now() < 5:
-            if row == 4:
-                row = 0
-            row += 1
-            hub.light_matrix.set_pixel(2, row, 87)
-            wait_for_seconds(time)
-            hub.light_matrix.set_pixel(2, row, 77)
-            wait_for_seconds(time)
-            hub.light_matrix.set_pixel(2, row, 67)
-            wait_for_seconds(time)
-            hub.light_matrix.set_pixel(2, row, 57)
-            wait_for_seconds(time)
-            hub.light_matrix.set_pixel(2, row, 47)
-            wait_for_seconds(time)
-            hub.light_matrix.set_pixel(2, row, 37)
-            wait_for_seconds(time)
-            hub.light_matrix.set_pixel(2, row, 27)
-            wait_for_seconds(time)
-            hub.light_matrix.set_pixel(2, row, 17)
-            wait_for_seconds(time)
-
 
 def waitLight(time : int, i : int, step : int, on : bool):
     timer.reset()
-    
+
     if on == False:
         while timer.now() < time:
             hub.light_matrix.show_image("SQUARE_SMALL", brightness = i)
@@ -204,7 +178,7 @@ def turn(deg : int, direction : str, aggressive : bool = False):
         times = 0
         remainder = deg - 45
 
-    var = 45 
+    var = 45
 
     if direction == "left":
         while i < times:
@@ -344,7 +318,7 @@ def executeMission(missionId : int):
 
     if missionId == 0:
         pass
-        
+
 def missionSelector():
     missionId = 0
     maxMissions = 3
@@ -378,11 +352,10 @@ def missionSelector():
         if exit == True:
             hub.light_matrix.show_image("SQUARE_SMALL", brightness = 100)
         else:
-            hub.light_matrix.write(str(missionId))    
+            hub.light_matrix.write(str(missionId))
         hub.status_light.on("blue")
 
 
 # Begin mission execution.
-loadingAnimation()
 missionSelector()
-# missionTester()
+#missionTester()
