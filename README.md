@@ -1,5 +1,35 @@
-# What this repositorys for
+<h1 align="center">
+  <strong>Template - Gilmore Gigabytes</strong>
+</h1>
 
-This code will work on the Spike Prime Ide, so it has no new python features such as match statements, os module, printf (which has been around for years) and so on. 
+<h3 align="center">
+  <a href="#">Contributions</a>
+  <span>·</span>
+  <a href="https://github.com/GilmoreGigabytes/Spike-Ide-Template/blob/main/Documentation.md">Documentation</a>
+</h3>
 
-If you get any errors unrelated to Spike Prime or your changes, feel free to submit an issue and we will do our best to fix it.
+---
+
+
+<br>
+
+## **Disclaimer**
+
+### Some of this code will need to be adjusted for your Spike Prime Design, for example the line follower and start functions.
+
+<br>
+
+
+<br>
+
+## Where to run this code
+
+This code is written in and for the Spike Prime IDE an as such it does not have any new python features and has many unoptimized solutions to simple things such as clearing the terminal that we have a slight improvement on in <a href="https://github.com/GilmoreGigabytes/Template">this</a> repository. 
+
+<br>
+
+<br>
+
+## Liscencing
+
+This repository is under the MIT liscense, but we would appreciate a mention in your code and to the judges. Thanks you.
