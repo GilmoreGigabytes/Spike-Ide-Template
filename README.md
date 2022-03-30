@@ -10,7 +10,6 @@
 
 ---
 
-
 <br>
 
 ## **Disclaimer**
@@ -19,14 +18,9 @@
 
 <br>
 
-
-<br>
-
 ## Where to run this code
 
-This code is written in and for the Spike Prime IDE an as such it does not have any new python features and has many unoptimized solutions to simple things such as clearing the terminal that we have a slight improvement on in <a href="https://github.com/GilmoreGigabytes/Template">this</a> repository. 
-
-<br>
+This code is written in and for the Spike Prime IDE an as such it does not have any new python features and has many unoptimized solutions to simple things. If you want to see a slightly more advanced version of this code check out <a href="https://github.com/GilmoreGigabytes/Template">this</a> repository. 
 
 <br>
 
