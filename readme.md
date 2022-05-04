@@ -24,6 +24,12 @@ This code is written in and for the Spike Prime IDE an as such it does not have 
 
 <br>
 
+## Where to write code
+
+Make sure to write all of your code to your own branch, later on we will merge it.
+
+<br>
+
 ## Liscencing
 
 This repository is under the MIT liscense, but we would appreciate a mention in your code and to the judges. Thank you.
