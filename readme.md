@@ -26,4 +26,4 @@ This code is written in and for the Spike Prime IDE an as such it does not have 
 
 ## Liscencing
 
-This repository is under the MIT liscense, but we would appreciate a mention in your code and to the judges. Thanks you.
+This repository is under the MIT liscense, but we would appreciate a mention in your code and to the judges. Thank you.
