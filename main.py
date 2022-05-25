@@ -28,39 +28,41 @@ class error:
     def throw(value, text : str):
         raise ValueError(str(value) + " is invalid \n" + text)
 
-
-    def template(value, typeVar : str):
-        if str(typeVar) == "sensor":
+    class template:
+        def sensor(value):
             if value != "left" and value != "right":
-                error.throw(value, "Sensor must be a string with the value of 'left' or 'right'")
-            return
-        if str(typeVar) == "speed":
+                error.throw(value, "Sensor must be a string with the value of `left` or `right`")
+
+        def speed(value):
             if error.typeCheck(value, int and float) == False or value <= 0:
                 error.throw(value, "Speed must be an integer greater than 0")
-            return
-        if str(typeVar) == "direction":
-            if value != "left" and value != "right":
-                error.throw(value, "Direction must be a string with the value of 'left' or 'right'")
-            return
-        if str(typeVar) == "moveDirection":
-            if value != "forward" and value != "backward":
-                error.throw(value, "Direction must be a string with the value of 'forward' or 'backward'")
-            return
-        if str(typeVar) == "armDirection":
-            if error.typeCheck(value, str) or value != "up" and value != "down":
-                error.throw(value, "Direction must be a string with the value of 'up' or 'down'")
-        if str(typeVar) == "distance":
-            if error.typeCheck(value, float) == False and error.typeCheck(value, int) == False or value <= 0:
-                error.throw(value, "Distance must an integer greater than 0")
-            return
-        if str(typeVar) == "armDistance":
-            if error.typeCheck(value, int) == False and error.typeCheck(value, float) == False:
-                error.throw(value, "Distance must an integer or float")
-            return
-        if str(typeVar) == "cm":
-            if error.typeCheck(value, int and float) == False or value <= 0:
-                error.throw(value, "Cm must be an integer greater than 0")
-                return
+
+        class direction:
+            def leftAndRight(value):
+                if value != "left" and value != "right":
+                    error.throw(value, "Direction must be a string with the value of `left` or `right`")
+
+            def forwardAndBackward(value):
+                if value != "forward" and value != "backward":
+                    error.throw(value, "Direction must be a string with the value of `forward` or `backward`")
+
+            def arm(value):
+                if error.typeCheck(value, str) or value != "up" and value != "down":
+                    error.throw(value, "Direction must be a string with the value of 'up' or 'down'")
+
+        class distance:
+            def norm(value):
+                if error.typeCheck(value, float) == False and error.typeCheck(value, int) == False or value <= 0:
+                    error.throw(value, "Distance must an integer greater than 0")
+            
+            def cm(value):
+                if error.typeCheck(value, int and float) == False or value <= 0:
+                    error.throw(value, "Cm must be an integer greater than 0")
+
+
+            def arm(value):
+                if error.typeCheck(value, int) == False and error.typeCheck(value, float) == False:
+                    error.throw(value, "Distance must an integer or float")
 
 
 def waitLight(time : int, i : int, step : int, on : bool):
@@ -111,10 +113,6 @@ def motion():
 
 
 def move(distance : int, direction : str, speed : int = defaultSpeed):
-    error.template(distance, "distance")
-    error.template(direction, "moveDirection")
-    error.template(speed, "speed")
-
     resetMotors()
     resetYawAngle()
 
@@ -127,8 +125,6 @@ def move(distance : int, direction : str, speed : int = defaultSpeed):
 
 
 def moveWithCorrection(cm : float or int):
-    error.template(cm, "cm")
-
     resetMotors()
     resetYawAngle()
 
@@ -141,9 +137,6 @@ def moveWithCorrection(cm : float or int):
 
 
 def turn(deg : int, direction : str, aggressive : bool = False):
-    error.template(deg, "deg")
-    error.template(direction, "direction")
-
     remainder = None
 
     if type(aggressive) != bool:
@@ -211,9 +204,6 @@ def turn(deg : int, direction : str, aggressive : bool = False):
 
 
 def followLine(sensor : str, cm : int or float):
-    error.template(sensor, "sensor")
-    error.template(cm, "cm")
-
     resetMotors()
 
     deg = cm / 0.077
@@ -250,10 +240,6 @@ def followLine(sensor : str, cm : int or float):
 
 
 def moveArm(direction : str, speed : int, distance : int or float):
-    error.template(direction, "armDirection")
-    error.template(distance, "armDistance")
-    error.template(speed, "speed")
-
     resetMotors()
 
     if direction == "down":
@@ -264,9 +250,6 @@ def moveArm(direction : str, speed : int, distance : int or float):
 
 
 def moveToLine(sensor : str, direction : str):
-    error.template(sensor, "sensor")
-    error.template(direction, "direction")
-
     resetMotors()
     resetYawAngle()
 
