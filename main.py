@@ -74,6 +74,8 @@ def waitLight(time : int, i : int, step : int, on : bool):
         while timer.now() < time:
             hub.light_matrix.show_image("SQUARE_SMALL", brightness = i)
             i += step
+    else:
+        raise ValueError("Bad")
 
 
 def resetYawAngle():
@@ -118,7 +120,7 @@ def move(distance : int, direction : str, speed : int = defaultSpeed):
 
     if direction == "forward":
         movepair.move(distance, "cm", 0, speed)
-    elif direction == "backward":
+    else:
         movepair.move(-distance, "cm", 0, speed)
 
     movepair.stop()
@@ -158,22 +160,22 @@ def turn(deg : int, direction : str, aggressive : bool = False):
     times = 1
     i = 0
 
-    if deg <= 90:
-        if direction == "left":
-            while hub.motion_sensor.get_yaw_angle() > -deg:
-                movepair.start_tank_at_power(-turnSpeed, turnSpeed)
-            movepair.stop()
-            return
-        elif direction == "right":
-            while hub.motion_sensor.get_yaw_angle() < deg:
-                movepair.start_tank_at_power(turnSpeed, -turnSpeed)
-            movepair.stop()
-            return
+    if deg <= 90 and direction == "left":
+        while hub.motion_sensor.get_yaw_angle() > -deg:
+            movepair.start_tank_at_power(-turnSpeed, turnSpeed)
+        movepair.stop()
+        return
+    elif deg <= 90 and direction == "right":
+        while hub.motion_sensor.get_yaw_angle() < deg:
+            movepair.start_tank_at_power(turnSpeed, -turnSpeed)
+        movepair.stop()  
+        return
 
     while deg >= 90:
         times += 1
         deg -= 45
 
+    # deg is now remainder
     if deg > 45:
         times = 0
         remainder = deg - 45
@@ -257,7 +259,7 @@ def moveArm(direction : str, speed : int, distance : int or float):
     if direction == "down":
         arm.run_for_rotations(distance, speed)
         return
-    elif direction == "up":
+    else:
         arm.run_for_rotations(-distance, speed)
 
 
@@ -306,7 +308,7 @@ def start(direction : str):
 
 
 def missionTester():
-    print("Test Stuff In Here")
+    print("Test Stuff In Here Without Going Through The Misison Selector")
 
 
 def executeMission(missionId : int):
@@ -328,27 +330,24 @@ def missionSelector():
 
     while True:
         resetMotors()
-        if hub.right_button.was_pressed():
-            if missionId >= maxMissions:
-                if missionId == maxMissions + 1:
-                    pass
-                else:
-                    missionId += 1
-                exit = True
-            else:
-                exit = False
-                missionId += 1
-        if hub.left_button.was_pressed():
-            if missionId != 0:
-                missionId -= 1
-                exit = False
-        if abs(rightMotor.get_degrees_counted()) >= turn:
-            if exit == True and missionId >= maxMissions:
-                clear()
-                waitLight(1.5, 1, 100, False)
-                raise SystemExit("Exiting...")
-            else:
-                executeMission(missionId)
+        if hub.right_button.was_pressed() and missionId >= maxMissions and missionId != maxMission + 1:
+            missionId += 1
+            exit = True
+        else:
+            exit = False
+            missionId += 1
+            
+        if hub.left_button.was_pressed() and missionId != 0:
+            missionId -= 1
+            exit = False
+            
+        if abs(rightMotor.get_degrees_counted()) >= turn and exit == True and missionId >= maxMissions:
+            clear()
+            waitLight(1.5, 1, 100, False)
+            raise SystemExit("Exiting...")
+        else:
+            executeMission(missionId)
+            
         if exit == True:
             hub.light_matrix.show_image("SQUARE_SMALL", brightness = 100)
         else:
