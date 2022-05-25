@@ -253,36 +253,37 @@ def moveToLine(sensor : str, direction : str):
     resetMotors()
     resetYawAngle()
 
-    if sensor == "right":
-        if direction == "forward":
-            while colourR.get_color() != "black":
-                correction = 0 - hub.motion_sensor.get_yaw_angle()
-                speed = 30
-                movepair.start_tank_at_power( (speed + correction), (speed - correction))
-            movepair.stop()
-            return
-        elif direction == "backward":
-            while colourR.get_color() != "black":
-                correction = 0 - hub.motion_sensor.get_yaw_angle()
-                speed = -30
-                movepair.start_tank_at_power((speed + correction), (speed - correction))
-            movepair.stop()
-            return
-    elif sensor == "left":
-        if direction == "forward":
-            while colourL.get_color() != "black":
-                correction = 0 - hub.motion_sensor.get_yaw_angle()
-                speed = 30
-                movepair.start_tank_at_power((speed + correction), (speed - correction))
-            movepair.stop()
-            return
-        elif direction == "backward":
-            while colourL.get_color() != "black":
-                correction = 0 - hub.motion_sensor.get_yaw_angle()
-                speed = -30
-                movepair.start_tank_at_power((speed + correction), (speed - correction))
-            movepair.stop()
-            return
+    if sensor == "right" and direction == "forward":
+        while colourR.get_color() != "black":
+            correction = 0 - hub.motion_sensor.get_yaw_angle()
+            speed = 30
+            movepair.start_tank_at_power( (speed + correction), (speed - correction))
+        movepair.stop()
+        return
+
+    if sensor == "right" and direction == "backward":
+        while colourR.get_color() != "black":
+            correction = 0 - hub.motion_sensor.get_yaw_angle()
+            speed = -30
+            movepair.start_tank_at_power((speed + correction), (speed - correction))
+        movepair.stop()
+        return
+
+    if sensor == "left" and direction == "forward":
+        while colourL.get_color() != "black":
+            correction = 0 - hub.motion_sensor.get_yaw_angle()
+            speed = 30
+            movepair.start_tank_at_power((speed + correction), (speed - correction))
+        movepair.stop()
+        return
+
+    if sensor == "left" and direction == "backward":
+        while colourL.get_color() != "black":
+            correction = 0 - hub.motion_sensor.get_yaw_angle()
+            speed = -30
+            movepair.start_tank_at_power((speed + correction), (speed - correction))
+        movepair.stop()
+        return
 
 
 def start(direction : str):
