@@ -113,6 +113,10 @@ def motion():
 
 
 def move(distance : int, direction : str, speed : int = defaultSpeed):
+    error.template.distance.norm(distance)
+    error.template.direction.forwardAndBackward(direction)
+    error.template.speed(speed)
+
     resetMotors()
     resetYawAngle()
 
@@ -125,6 +129,8 @@ def move(distance : int, direction : str, speed : int = defaultSpeed):
 
 
 def moveWithCorrection(cm : float or int):
+    error.template.distance.cm(cm)
+
     resetMotors()
     resetYawAngle()
 
@@ -137,10 +143,15 @@ def moveWithCorrection(cm : float or int):
 
 
 def turn(deg : int, direction : str, aggressive : bool = False):
+    error.template.direction.leftAndRight(direction)
+
     remainder = None
 
     if type(aggressive) != bool:
         error.throw(aggressive, "Aggressive mode must be a boolien")
+
+    if deg <= 0:
+        error.throw(deg, "Deg must be an integer > 0")
 
     resetMotors()
     resetYawAngle()
@@ -158,7 +169,7 @@ def turn(deg : int, direction : str, aggressive : bool = False):
             movepair.start_tank_at_power(-turnSpeed, turnSpeed)
         movepair.stop()
         return
-    elif deg <= 90 and direction == "right":
+    if deg <= 90 and direction == "right":
         while hub.motion_sensor.get_yaw_angle() < deg:
             movepair.start_tank_at_power(turnSpeed, -turnSpeed)
         movepair.stop()  
@@ -188,7 +199,8 @@ def turn(deg : int, direction : str, aggressive : bool = False):
             movepair.stop()
             resetYawAngle()
         return
-    elif direction == "right":
+
+    if direction == "right":
         while i < times:
             while hub.motion_sensor.get_yaw_angle() < var:
                 movepair.start_tank_at_power(turnSpeed, -turnSpeed)
@@ -204,6 +216,9 @@ def turn(deg : int, direction : str, aggressive : bool = False):
 
 
 def followLine(sensor : str, cm : int or float):
+    error.template.distance.cm(cm)
+    error.template.sensor(sensor)
+
     resetMotors()
 
     deg = cm / 0.077
@@ -240,6 +255,10 @@ def followLine(sensor : str, cm : int or float):
 
 
 def moveArm(direction : str, speed : int, distance : int or float):
+    error.template.direction.arm(direction)
+    error.template.speed(speed)
+    error.template.distance.norm(distance)
+
     resetMotors()
 
     if direction == "down":
@@ -250,6 +269,9 @@ def moveArm(direction : str, speed : int, distance : int or float):
 
 
 def moveToLine(sensor : str, direction : str):
+    error.template.sensor(sensor)
+    error.direction.leftAndRight(direction)
+
     resetMotors()
     resetYawAngle()
 
