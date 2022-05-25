@@ -336,6 +336,7 @@ def missionSelector():
 
     while True:
         resetMotors()
+
         if hub.right_button.was_pressed() and missionId >= maxMissions and missionId != maxMission + 1:
             missionId += 1
             exit = True
